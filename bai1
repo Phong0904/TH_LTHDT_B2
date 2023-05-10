@@ -1,0 +1,331 @@
+package TH2_LTHDT;
+import java.text.NumberFormat;
+import java.util.Locale;
+import java.util.Scanner;
+public class Account {
+    private double sotien;
+    private  int sotk;
+    private String tentk, trangthai;
+    Scanner sc = new Scanner(System.in);
+    public Account() {
+    }
+    public Account(double sotien, int sotk, String tentk, String trangthai) {
+        if(sotien>50){
+            this.sotien=sotien;
+        }else{
+            this.sotien=50;
+        }
+        if(sotk<=0){
+            this.sotk=999999;
+        }else{
+            this.sotk=sotk;
+        }
+        if(tentk.isEmpty()||tentk.trim().isEmpty()){
+            this.tentk="Chua xac dinh";
+        }else{
+            this.tentk=tentk;
+        }
+        if (tentk.isEmpty() || sotk == 0 || sotien < 0) {
+            this.trangthai = "Khong hop le - Thieu thong tin";
+        } else {
+            this.trangthai = "Hop le";
+        }
+    }
+    public Account(double sotien, int sotk, String tentk) {
+        if(sotien>=50){
+            this.sotien=sotien;
+        }else{
+            this.sotien=50;
+        }
+        if(sotk<=0 || sotk==999999){
+            this.sotk=999999;
+        }else{
+            this.sotk=sotk;}
+        if(tentk.isEmpty()||tentk.trim().isEmpty()){this.tentk="Chua xac dinh";}else{this.tentk=tentk;}}
+    public double getSotien() {
+        return sotien;
+    }
+    public void setSotien(double sotien) {
+        if(sotien>=50){
+            this.sotien=sotien;
+        }else{
+            this.sotien=50;
+        }
+    }
+    public int getSotk() {
+        return sotk;
+    }
+    public void setSotk(int sotk) {
+        if(sotk<=0 || sotk==999999){
+            this.sotk=999999;
+        }else{
+            this.sotk=sotk;
+        }
+    }
+    public String getTentk() {
+        return tentk;
+    }
+    public void setTentk(String tentk) {
+        if(tentk.isEmpty()||tentk.trim().isEmpty()){
+            this.tentk="Chua xac dinh";
+        }else{
+            this.tentk=tentk;
+        }
+    }
+    public void setTrangthai(String trangthai) {
+        if (this.tentk.equals("Chua xac dinh") || this.sotk == 0 || this.sotien < 0) {
+            this.trangthai = "Khong hop le - Thieu thong tin";
+        } else {
+            this.trangthai = "Hop le";
+        }
+    }
+    public String getTrangthai() {
+        return trangthai;
+    }
+    public double naptien(double sotiennap){
+        if(sotiennap>0){
+            sotien += sotiennap;
+            NumberFormat tiente1 = NumberFormat.getCurrencyInstance();
+            String tien = tiente1.format(sotiennap);
+            System.out.println("so tien vua nap la: "+ tien );
+            System.out.println("So tien hien huu la: "+ sotien);
+        }else{
+            System.out.println("Khong the nop");
+        }
+        return sotiennap;
+    }
+    public double ruttien(double sotienrut){
+        if(sotienrut>sotien||sotienrut<0){
+            System.out.println("So du khong kha dung");
+        }else{
+            sotien-=sotienrut;
+            NumberFormat tiente1 = NumberFormat.getCurrencyInstance();
+            String tien1 = tiente1.format(sotienrut);
+            System.out.println("so tien vua nap la: "+ tien1 );
+            System.out.println("So tien hien huu la: "+ sotien);
+        }
+        return sotienrut;
+    }
+    public boolean chuyentien(double sotienchuyen,Account ngchuyen, Account ngnhan){
+        if (ngchuyen.getSotien() < sotienchuyen) {
+            return false;
+        }
+        ngchuyen.ruttien(sotienchuyen);
+        ngnhan.naptien(sotienchuyen);
+        return true;
+    }
+    public double daohan(){
+        double laixuat = 0.035;
+        sotien = sotien + sotien*laixuat;
+        NumberFormat currencyEN = NumberFormat.getCurrencyInstance();
+        String str1 = currencyEN.format(sotien);
+        System.out.println("dao han la: " + str1);
+        return sotien;
+    }
+    @Override
+    public String toString() {
+        Locale locale = new Locale("vi", "vn");
+        NumberFormat numfo = NumberFormat.getCurrencyInstance(locale);
+        String tiente = numfo.format(sotien);
+        return "Account{" + "sotien=" + tiente + ", sotk=" + sotk + ", tentk=" + tentk + ", trangthai=" + trangthai + '}';
+    }
+}
+package TH2_LTHDT;
+public class AccountList {
+    private Account[] accList;
+    private int count;
+    public AccountList(int n){
+        accList = new Account[n];
+        count = 0;
+    }
+    AccountList al;
+    public AccountList(){
+        al = new AccountList(10);
+    }
+    public void themTK(Account ac){
+        if(count < accList.length){
+            accList[count] = ac;
+            count ++;
+            System.out.println("Them thanh cong");
+        }else{
+            System.out.println("Khong the them, danh sach day");
+        }
+    }
+    public int getCount() {
+        return count;
+    }
+    public void setCount(int count) {
+        this.count = count;
+    }
+    public Account getaccount(int index){
+        if(index < 0 ||index> count){
+            System.out.println("Tai khoan khong hop le");
+            return null;
+        }else{
+            return accList[index];
+        }
+    }
+    public Account tim_theo_sotk(int sotk){
+        for(int i=0; i<count;i++){
+            if(accList[i].getSotk() == sotk){
+                return accList[i];
+            }
+        }
+        return null;
+    }
+    public void xoaTK(int sotk){
+        int index=-1;
+        for(int i=0; i<count;i++){
+            if(accList[i].getSotk()==sotk){
+                index = i;
+                break;
+            }
+        }
+       if(index != -1){
+           for(int i = index; i<count-1; i++){
+               accList[i]=accList[i+1];
+           }
+           count--;
+           System.out.println("Xoa thanh cong");
+       }else{
+           System.out.println("Khong tim thay tai khoan");
+       }
+    }
+    public int soluongtaikhoan(){
+        if (count == 0) {
+            System.out.println("Khong co tai khoan nao trong danh sach");
+        }else{
+            System.out.println("so luong tai khoan la: "+count);
+        }
+        return count;
+    }
+    public void inAccount(){
+        for(int i=0; i<count;i++){
+            System.out.println("---------------------");
+            System.out.println("Thong tin tai khoan thu "+(i+1)+" la:");
+            System.out.println("So ten khoan la: "+accList[i].getTentk());
+            System.out.println("So tai khoan la: "+accList[i].getSotk());
+            System.out.println("So tien la: "+accList[i].getSotien());
+            System.out.println("Dao han la: "+accList[i].daohan());
+        }
+    }
+}
+package TH2_LTHDT;
+import java.util.Scanner;
+public class AccountTest {
+    private AccountList alist;
+    public AccountTest(AccountList alist) {
+        this.alist = alist;
+    }
+    public static void main(String[] args) {
+        AccountList al = new AccountList(10);
+        Account ac1 = new Account();
+        Scanner sc = new Scanner(System.in);
+        int menu;
+        do{
+            System.out.println("-------------");
+            System.out.println("Chon menu:");
+            System.out.println("1. Them tai khoan");
+            System.out.println("2. So luong tai khoan");
+            System.out.println("3. In thong tin tat ca tai khoan");
+            System.out.println("4. Nap tien vao tai khoan");
+            System.out.println("5. Rut tien");
+            System.out.println("6. Tim kiem so tai khoan");
+            System.out.println("7. Chuyen tien");
+            System.out.println("0. Ket thuc");
+            System.out.print("Nhap: ");
+            menu = sc.nextInt();
+            switch(menu){
+                case 1:
+                    sc.nextLine();
+                    System.out.print("Nhap vao ten tai khoan: ");
+                    String tentk = sc.nextLine();
+                    System.out.print("Nhap vao so tien: ");
+                    double sotien = sc.nextDouble();
+                    System.out.print("Nhap vao so tai khoan: ");
+                    int sotk = sc.nextInt();
+                    sc.nextLine();
+                    Account ac = new Account(sotien, sotk, tentk);
+                    al.themTK(ac);
+                    break;       
+                case 2:
+                    al.soluongtaikhoan();
+                    break;
+                case 3:
+                    al.inAccount();
+                    break;
+                case 4:
+                System.out.print("Nhap so tai khoan: ");
+                sotk = sc.nextInt();
+                ac1 = al.tim_theo_sotk(sotk);
+                if (ac1 == null) {
+                    System.out.println("Khong tim thay tai khoan");
+                } else {
+                    System.out.print("Nhap so tien can nap: ");
+                    double sotiennap = sc.nextDouble();
+                    ac1.naptien(sotiennap);
+                    System.out.println("Da nap " + sotiennap + " vao tai khoan " + sotk);
+                    System.out.println("Thong tin tai khoan sau khi nap tien:");
+                    System.out.println(ac1.toString());
+                }
+                break;
+                case 5:
+                System.out.print("Nhap so tai khoan: ");
+                sotk = sc.nextInt();
+                ac1 = al.tim_theo_sotk(sotk);
+                if (ac1 == null) {
+                    System.out.println("Khong tim thay tai khoan");
+                } else {
+                    System.out.print("Nhap so tien can rut: ");
+                    double sotienrut = sc.nextDouble();
+                    ac1.ruttien(sotienrut);
+                    System.out.println(ac1.toString());
+                }
+                    break;
+                case 6:
+                    sc.nextLine();
+                    System.out.print("Nhap vao so tai khoan: ");
+                    sotk = sc.nextInt();
+                    Account account = al.tim_theo_sotk(sotk);
+                    if (account != null) {
+                        System.out.println("Thong tin tai khoan:");
+                        System.out.println(account.toString());
+                    } else {
+                        System.out.println("Khong tim thay tai khoan.");
+                    }
+                    break;
+                case 7:
+                    System.out.print("Nhap vao so tai khoan chuyen: ");
+                    int stkchuyen = sc.nextInt();
+                    Account ngchuyen = al.tim_theo_sotk(stkchuyen);
+                    if(ngchuyen == null){
+                        System.out.println("Khong tim thay");
+                        break;
+                    }
+                    System.out.print("Nhap vao so tai khoan nhan: ");
+                    int stknhan = sc.nextInt();
+                    Account ngnhan = al.tim_theo_sotk(stknhan);
+                    if(ngnhan == null){
+                        System.out.println("Khong tim thay");
+                        break;
+                    }
+                    System.out.print("Nhap vao so tai khoan can chuyen:");
+                    double sotienchuyen = sc.nextDouble();
+                    boolean chuyen = ngnhan.chuyentien(sotienchuyen, ngchuyen, ngnhan);
+                    if(chuyen){
+                        System.out.println("Da chuyen "+ sotienchuyen + " tu tai khoan "+stkchuyen+" sang tai khoan "+stknhan);
+                        System.out.println("Thong tin so tai khoan nguoi chuyen "+ ngchuyen.toString());
+                        System.out.println("Thong tin so tai khoan nguoi nhan "+ ngnhan.toString());
+                    }else{
+                        System.out.println("So du khong du");
+                    }
+                default:
+                    if(menu!=0){
+                        System.out.println("Vui long nhap lai");
+                    }else{
+                        System.out.println("Chuong trinh ket thuc");
+                    }
+            }
+        }while(menu!=0);
+    }
+}
